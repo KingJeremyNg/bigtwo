@@ -1,77 +1,62 @@
-export default function deck() {
-    class Card {
-        constructor(suit, value, img) {
-            this.suit = suit;
-            this.value = value;
+const SUITS = ["♦", "♣", "♥", "♠"];
+const VALUES = ["3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2"];
+
+export default class Deck {
+    constructor(cards = newDeck()) {
+        this.cards = cards;
+        this.players = {};
+    }
+
+    get numCards() {
+        return this.cards.length;
+    }
+
+    shuffle() {
+        let currentIndex = this.numCards,
+            temporaryValue,
+            randomIndex;
+        for (let i = this.numCards - 1; i > 0; i--) {
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            // And swap it with the current element.
+            temporaryValue = this.cards[currentIndex];
+            this.cards[currentIndex] = this.cards[randomIndex];
+            this.cards[randomIndex] = temporaryValue;
         }
     }
 
-    // Cards of diamond
-    let d_3 = new Card("d", "3");
-    let d_4 = new Card("d", "4");
-    let d_5 = new Card("d", "5");
-    let d_6 = new Card("d", "6");
-    let d_7 = new Card("d", "7");
-    let d_8 = new Card("d", "8");
-    let d_9 = new Card("d", "9");
-    let d_t = new Card("d", "t");
-    let d_j = new Card("d", "j");
-    let d_q = new Card("d", "q");
-    let d_k = new Card("d", "k");
-    let d_a = new Card("d", "a");
-    let d_2 = new Card("d", "2");
+    deal(numPlayers) {
+        for (let i = 0; i < numPlayers; i++) {
+            let handSize = (this.numCards / numPlayers);
+            this.player[i] = this.cards.slice(i * handSize, (i + 1) * handSize);
+        }
+    }
+}
 
-    // Cards of clubs
-    let c_3 = new Card("c", "3");
-    let c_4 = new Card("c", "4");
-    let c_5 = new Card("c", "5");
-    let c_6 = new Card("c", "6");
-    let c_7 = new Card("c", "7");
-    let c_8 = new Card("c", "8");
-    let c_9 = new Card("c", "9");
-    let c_t = new Card("c", "t");
-    let c_j = new Card("c", "j");
-    let c_q = new Card("c", "q");
-    let c_k = new Card("c", "k");
-    let c_a = new Card("c", "a");
-    let c_2 = new Card("c", "2");
+class Card {
+    constructor(suit, value) {
+        this.suit = suit;
+        this.value = value;
+    }
 
-    // Cards of hearts
-    let h_3 = new Card("h", "3");
-    let h_4 = new Card("h", "4");
-    let h_5 = new Card("h", "5");
-    let h_6 = new Card("h", "6");
-    let h_7 = new Card("h", "7");
-    let h_8 = new Card("h", "8");
-    let h_9 = new Card("h", "9");
-    let h_t = new Card("h", "t");
-    let h_j = new Card("h", "j");
-    let h_q = new Card("h", "q");
-    let h_k = new Card("h", "k");
-    let h_a = new Card("h", "a");
-    let h_2 = new Card("h", "2");
+    get color() {
+        return this.suit === "♦" || this.suit === "♥" ? "red" : "black";
+    }
 
-    // Cards of spades
-    let s_3 = new Card("s", "3");
-    let s_4 = new Card("s", "4");
-    let s_5 = new Card("s", "5");
-    let s_6 = new Card("s", "6");
-    let s_7 = new Card("s", "7");
-    let s_8 = new Card("s", "8");
-    let s_9 = new Card("s", "9");
-    let s_t = new Card("s", "t");
-    let s_j = new Card("s", "j");
-    let s_q = new Card("s", "q");
-    let s_k = new Card("s", "k");
-    let s_a = new Card("s", "a");
-    let s_2 = new Card("s", "2");
+    getHTML() {
+        const cardDiv = document.createElement('div');
+        cardDiv.innerText = this.suit;
+        cardDiv.classList.add("card", this.color);
+        cardDiv.dataset.value = this.value;
+        return cardDiv;
+    }
+}
 
-    deck = [
-        d_3, d_4, d_5, d_6, d_7, d_8, d_9, d_t, d_j, d_q, d_k, d_a, d_2,
-        c_3, c_4, c_5, c_6, c_7, c_8, c_9, c_t, c_j, c_q, c_k, c_a, c_2,
-        h_3, h_4, h_5, h_6, h_7, h_8, h_9, h_t, h_j, h_q, h_k, h_a, h_2,
-        s_3, s_4, s_5, s_6, s_7, s_8, s_9, s_t, s_j, s_q, s_k, s_a, s_2,
-    ]
-
-    return deck;
+function newDeck() {
+    return SUITS.flatMap(suit => {
+        return VALUES.map(value => {
+            return new Card(suit, value);
+        })
+    })
 }
