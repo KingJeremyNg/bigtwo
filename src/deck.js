@@ -4,7 +4,6 @@ const VALUES = ["3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2"
 export default class Deck {
     constructor(cards = newDeck()) {
         this.cards = cards;
-        this.players = {};
     }
 
     get numCards() {
@@ -26,17 +25,8 @@ export default class Deck {
         }
     }
 
-    deal(numPlayers) {
-        for (let i = 0; i < numPlayers; i++) {
-            let handSize = (this.numCards / numPlayers);
-            this.players[i] = this.cards.slice(i * handSize, (i + 1) * handSize);
-        }
-    }
-
     sort() {
-        Object.keys(this.players).forEach((key) => {
-            this.players[key].sort(compareCard);
-        })
+        this.cards.sort(compareCard);
     }
 }
 
