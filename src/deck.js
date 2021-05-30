@@ -29,8 +29,14 @@ export default class Deck {
     deal(numPlayers) {
         for (let i = 0; i < numPlayers; i++) {
             let handSize = (this.numCards / numPlayers);
-            this.player[i] = this.cards.slice(i * handSize, (i + 1) * handSize);
+            this.players[i] = this.cards.slice(i * handSize, (i + 1) * handSize);
         }
+    }
+
+    sort() {
+        Object.keys(this.players).forEach((key) => {
+            this.players[key].sort(compareCard);
+        })
     }
 }
 
@@ -59,4 +65,17 @@ function newDeck() {
             return new Card(suit, value);
         })
     })
+}
+
+function compareCard(a, b) {
+    // Check face value first
+    let v1 = VALUES.indexOf(a.value);
+    let v2 = VALUES.indexOf(b.value);
+    if (v1 < v2) return -1;
+    if (v1 > v2) return 1;
+    // If face values are equal then check suits
+    let s1 = SUITS.indexOf(a.suit);
+    let s2 = SUITS.indexOf(b.suit);
+    if (s1 < s2) return -1;
+    if (s1 > s2) return 1;
 }
